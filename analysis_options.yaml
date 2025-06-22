@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # This file configures the analyzer, which statically analyzes Dart code to
 # check for errors, warnings, and lints.
 #
@@ -27,5 +28,9 @@ linter:
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 
+=======
+include: package:flutter_lints/flutter.yaml
+
+>>>>>>> 1bd7916f9bd6ef60ede69608114a2b1b32add4fe
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

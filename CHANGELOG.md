@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -68,3 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Data analysis utilities
 - Advanced filtering and sorting
 - Export/import functionality 
+=======
+## 0.0.1
+
+* TODO: Describe initial release.
+>>>>>>> 1bd7916f9bd6ef60ede69608114a2b1b32add4fe

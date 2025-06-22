@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Tartım - Weight Measurement Package
 
 [![pub package](https://img.shields.io/pub/v/tartim.svg)](https://pub.dev/packages/tartim)
@@ -258,3 +259,6 @@ For issues and feature requests, please visit our [GitHub Issues](https://github
 ---
 
 **Made with ❤️ for livestock management and weight measurement automation**
+=======
+# tartim
+>>>>>>> 1bd7916f9bd6ef60ede69608114a2b1b32add4fe
