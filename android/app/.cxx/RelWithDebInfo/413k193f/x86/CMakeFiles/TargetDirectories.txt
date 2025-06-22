@@ -1,0 +1,2 @@
+C:/Users/Hasan Hsey/Desktop/ciftlikyonetim-main/android/app/.cxx/RelWithDebInfo/413k193f/x86/CMakeFiles/edit_cache.dir
+C:/Users/Hasan Hsey/Desktop/ciftlikyonetim-main/android/app/.cxx/RelWithDebInfo/413k193f/x86/CMakeFiles/rebuild_cache.dir

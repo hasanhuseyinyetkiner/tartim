@@ -1,0 +1,7 @@
+C:\Users\Hasan Hsey\Desktop\ciftlikyonetim-main\obj\Release\net7.0\linux-x64\CiftlikYonetim.csproj.AssemblyReference.cache
+C:\Users\Hasan Hsey\Desktop\ciftlikyonetim-main\obj\Release\net7.0\linux-x64\CiftlikYonetim.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Hasan Hsey\Desktop\ciftlikyonetim-main\obj\Release\net7.0\linux-x64\CiftlikYonetim.AssemblyInfoInputs.cache
+C:\Users\Hasan Hsey\Desktop\ciftlikyonetim-main\obj\Release\net7.0\linux-x64\CiftlikYonetim.AssemblyInfo.cs
+C:\Users\Hasan Hsey\Desktop\ciftlikyonetim-main\obj\Release\net7.0\linux-x64\CiftlikYonetim.csproj.CoreCompileInputs.cache
+C:\Users\Hasan Hsey\Desktop\ciftlikyonetim-main\obj\Release\net7.0\linux-x64\CiftlikYonetim.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Hasan Hsey\Desktop\ciftlikyonetim-main\obj\Release\net7.0\linux-x64\CiftlikYonetim.MvcApplicationPartsAssemblyInfo.cache

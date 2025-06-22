@@ -1,0 +1,1097 @@
+// D:\Merlab\animaltracker\lib\main.dart 
+import 'package:animaltracker/app/bindings/initial_binding.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'app/data/database/database_helper.dart';
+import 'app/routes/app_pages.dart';
+
+void main() async{
+  //FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseHelper.instance.database;
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      title: "Çiftlik Yönetim Sistemi",
+      initialRoute: AppPages.INITIAL,
+      initialBinding: InitialBinding(),
+      getPages: AppPages.routes,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF2E7D32),
+          primary: const Color(0xFF2E7D32),
+          secondary: const Color(0xFF4CAF50),
+          surface: Colors.white,
+          background: const Color(0xFFF5F5F5),
+          error: const Color(0xFFD32F2F),
+        ),
+        useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF2E7D32),
+          foregroundColor: Colors.white,
+        ),
+        cardTheme: CardTheme(
+          color: Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF4CAF50),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+      ),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\bindings\initial_binding.dart 
+import 'package:animaltracker/app/services/bluetooth_service.dart';
+import 'package:get/get.dart';
+
+class InitialBinding implements Bindings {
+  @override
+  void dependencies() {
+    Get.put(BluetoothController());
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\data\api\api_base.dart 
+import 'dart:convert';
+import 'package:animaltracker/app/data/api/models/api_error.dart';
+import 'package:animaltracker/app/data/api/models/api_response.dart';
+import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
+
+abstract class ApiBase extends GetxService {
+  final String baseUrl;
+  String? _basicAuth;
+
+  ApiBase(this.baseUrl);
+
+  void setBasicAuth(String username, String password) {
+    String credentials = base64Encode(utf8.encode('$username:$password'));
+    _basicAuth = 'Basic $credentials';
+  }
+
+  Map<String, String> _getHeaders(Map<String, String>? additionalHeaders) {
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+    };
+    if (_basicAuth != null) {
+      headers['Authorization'] = _basicAuth!;
+    }
+    if (additionalHeaders != null) {
+      headers.addAll(additionalHeaders);
+    }
+    return headers;
+  }
+
+  Future<ApiResponse<T>> get<T>(String endpoint,
+      {Map<String, String>? headers}) async {
+    return _sendRequest<T>('GET', endpoint, headers: headers);
+  }
+
+  Future<ApiResponse<T>> post<T>(String endpoint,
+      {Map<String, String>? headers, dynamic body}) async {
+    return _sendRequest<T>('POST', endpoint, headers: headers, body: body);
+  }
+
+  Future<ApiResponse<T>> put<T>(String endpoint,
+      {Map<String, String>? headers, dynamic body}) async {
+    return _sendRequest<T>('PUT', endpoint, headers: headers, body: body);
+  }
+
+  Future<ApiResponse<T>> delete<T>(String endpoint,
+      {Map<String, String>? headers, dynamic body}) async {
+    return _sendRequest<T>('DELETE', endpoint, headers: headers, body: body);
+  }
+
+  Future<ApiResponse<T>> _sendRequest<T>(String method, String endpoint,
+      {Map<String, String>? headers, dynamic body}) async {
+    try {
+      final uri = Uri.parse('$baseUrl$endpoint');
+      final requestHeaders = _getHeaders(headers);
+      late final http.Response response;
+
+      switch (method) {
+        case 'POST':
+          response = await http.post(uri, headers: requestHeaders, body: jsonEncode(body));
+          break;
+        case 'PUT':
+          response = await http.put(uri, headers: requestHeaders, body: jsonEncode(body));
+          break;
+        case 'DELETE':
+          response = await http.delete(uri, headers: requestHeaders, body: jsonEncode(body));
+          break;
+        case 'GET':
+        default:
+          response = await http.get(uri, headers: requestHeaders);
+          break;
+      }
+
+      return _processResponse<T>(response);
+    } catch (e) {
+      return ApiResponse(error: ApiError(message: e.toString()));
+    }
+  }
+
+  ApiResponse<T> _processResponse<T>(http.Response response) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body);
+      return ApiResponse<T>(
+        data: jsonResponse is T ? jsonResponse : jsonResponse as T,
+      );
+    } else {
+      return ApiResponse(
+        error: ApiError(
+          statusCode: response.statusCode,
+          message: 'HTTP error ${response.statusCode}',
+          details: response.body,
+        ),
+      );
+    }
+  }
+}
+ 
+// D:\Merlab\animaltracker\lib\app\data\api\models\api_error.dart 
+class ApiError {
+  final int? statusCode;
+  final String message;
+  final dynamic details;
+
+  ApiError({
+    this.statusCode,
+    required this.message,
+    this.details,
+  });
+} 
+// D:\Merlab\animaltracker\lib\app\data\api\models\api_response.dart 
+import 'package:animaltracker/app/data/api/models/api_error.dart';
+
+class ApiResponse<T> {
+  final T? data;
+  final ApiError? error;
+
+  ApiResponse({this.data, this.error});
+} 
+// D:\Merlab\animaltracker\lib\app\data\database\database_helper.dart 
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+class DatabaseHelper {
+  static final DatabaseHelper instance = DatabaseHelper._init();
+  static Database? _database;
+
+  DatabaseHelper._init();
+
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDB('app_database.db');
+    return _database!;
+  }
+
+  Future<Database> _initDB(String filePath) async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, filePath);
+
+    return await openDatabase(path, version: 1, onCreate: _createDB);
+  }
+
+  Future _createDB(Database db, int version) async {
+    const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    const textType = 'TEXT NOT NULL';
+
+    await db.execute(
+        '''CREATE TABLE users (id $idType,name $textType,email $textType)''');
+  }
+
+  Future<int> insert(String table, Map<String, dynamic> row) async {
+    final db = await instance.database;
+    return await db.insert(table, row);
+  }
+
+  Future<List<Map<String, dynamic>>> queryAllRows(String table) async {
+    final db = await instance.database;
+    return await db.query(table);
+  }
+
+  Future<List<Map<String, dynamic>>> queryWhere(String table, String where, List<dynamic> whereArgs) async {
+    final db = await instance.database;
+    return await db.query(table, where: where, whereArgs: whereArgs);
+  }
+
+  Future<int> update(String table, Map<String, dynamic> row, String where, List<dynamic> whereArgs) async {
+    final db = await instance.database;
+    return await db.update(table, row, where: where, whereArgs: whereArgs);
+  }
+
+  Future<int> delete(String table, String where, List<dynamic> whereArgs) async {
+    final db = await instance.database;
+    return await db.delete(table, where: where, whereArgs: whereArgs);
+  }
+
+  Future close() async {
+    final db = await instance.database;
+    db.close();
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\data\models\device.dart 
+class Device {
+  final String id;
+  final String name;
+  final int rssi;
+  String lastData;
+
+  Device({
+    required this.id,
+    required this.name,
+    required this.rssi,
+    this.lastData = '',
+  });
+
+  @override
+  String toString() {
+    return 'Device(id: $id, name: $name, rssi: $rssi, lastData: $lastData)';
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\data\models\measurement.dart 
+class Measurement {
+  final double weight;
+  final String rfid;
+  final String timestamp;
+
+  Measurement({
+    required this.weight,
+    required this.rfid,
+    required this.timestamp,
+  });
+
+  @override
+  String toString() {
+    return 'Measurement(weight: $weight, rfid: $rfid, timestamp: $timestamp)';
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\data\repositories\device_repository.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\auth\login\login_binding.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\auth\login\login_controller.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\auth\login\login_view.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\auth\signup\signup_binding.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\auth\signup\signup_controller.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\auth\signup\signup_view.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\devices\devices_binding.dart 
+import 'package:animaltracker/app/services/bluetooth_service.dart';
+import 'package:get/get.dart';
+
+class DevicesBinding implements Bindings {
+  @override
+  void dependencies() {
+    Get.put(BluetoothController());
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\modules\devices\devices_controller.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\devices\devices_view.dart 
+import 'package:animaltracker/app/services/bluetooth_service.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class DevicesView extends GetView<BluetoothController> {
+  const DevicesView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Cihaz Yönetimi'),
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildScanButton(context),
+              const SizedBox(height: 16),
+              _buildDeviceList(context),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildScanButton(BuildContext context) {
+    return ElevatedButton.icon(
+      icon: const Icon(Icons.search),
+      label: const Text('Cihazları Tara'),
+      onPressed: controller.startScan,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+      ),
+    );
+  }
+
+  Widget _buildDeviceList(BuildContext context) {
+    return Expanded(
+      child: Obx(() => ListView.builder(
+        itemCount: controller.availableDevices.length,
+        itemBuilder: (context, index) {
+          final device = controller.availableDevices[index];
+          return Obx(() {
+            final isConnected = controller.deviceConnectionStatus[device.id] ?? false;
+            return Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              child: ListTile(
+                title: Text(device.name),
+                subtitle: Text('RSSI: ${device.rssi}'),
+                trailing: ElevatedButton(
+                  child: Text(isConnected ? 'Bağlantıyı Kes' : 'Bağlan'),
+                  onPressed: () => isConnected
+                      ? controller.disconnectDevice()
+                      : controller.connectToDevice(device),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isConnected
+                        ? Theme.of(context).colorScheme.error
+                        : Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+            );
+          });
+        },
+      )),
+    );
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\modules\home\home_binding.dart 
+import 'package:animaltracker/app/services/bluetooth_service.dart';
+import 'package:get/get.dart';
+
+class HomeBinding implements Bindings {
+  @override
+  void dependencies() {
+    Get.put(BluetoothController());
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\modules\home\home_controller.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\home\home_view.dart 
+import 'package:animaltracker/app/services/bluetooth_service.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../routes/app_pages.dart';
+
+class HomeView extends GetView<BluetoothController> {
+  const HomeView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Çiftlik Yönetim Sistemi'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bluetooth),
+            onPressed: () => Get.toNamed(Routes.DEVICES),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildBluetoothStatus(context),
+                const SizedBox(height: 20),
+                _buildDashboardSection(context),
+                const SizedBox(height: 20),
+                _buildQuickActions(context),
+                const SizedBox(height: 20),
+                _buildRecentMeasurements(context),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBluetoothStatus(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Obx(() => Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: controller.isDeviceConnected.value
+            ? colorScheme.primaryContainer
+            : colorScheme.errorContainer,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(
+            controller.isDeviceConnected.value ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
+            color: controller.isDeviceConnected.value ? colorScheme.primary : colorScheme.error,
+            size: 28,
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              controller.isDeviceConnected.value
+                  ? 'Bağlı: ${controller.connectedDevice.value?.name ?? ""}'
+                  : 'Cihaz Bağlı Değil',
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onBackground
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: controller.isDeviceConnected.value
+                ? controller.disconnectDevice
+                : () => Get.toNamed(Routes.DEVICES),
+            child: Text(controller.isDeviceConnected.value ? 'Bağlantıyı Kes' : 'Bağlan'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: controller.isDeviceConnected.value ? colorScheme.error : colorScheme.primary,
+              foregroundColor: colorScheme.onPrimary,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            ),
+          ),
+        ],
+      ),
+    ));
+  }
+
+  Widget _buildDashboardSection(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Özet',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            color: colorScheme.onBackground,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(child: _buildDashboardCard(context, 'Son Ölçüm', '${controller.currentWeight.value.toStringAsFixed(2)} kg')),
+            const SizedBox(width: 16),
+            Expanded(child: _buildDashboardCard(context, 'Son RFID', controller.currentRfid.value)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDashboardCard(BuildContext context, String title, String value) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurfaceVariant
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.primary
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActions(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Hızlı İşlemler',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            color: Theme.of(context).colorScheme.onBackground,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionButton(
+                context,
+                'Ağırlık Ölçümü',
+                Icons.scale,
+                    () => Get.toNamed(Routes.WEIGHT_MEASUREMENT),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildActionButton(
+                context,
+                'Cihaz Yönetimi',
+                Icons.devices,
+                    () => Get.toNamed(Routes.DEVICES),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context, String title, IconData icon, VoidCallback onPressed) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return ElevatedButton.icon(
+      icon: Icon(icon),
+      label: Text(title),
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        foregroundColor: colorScheme.onPrimary,
+        backgroundColor: colorScheme.primary,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecentMeasurements(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Son Ölçümler',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            color: colorScheme.onBackground,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Obx(() => ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: controller.measurementHistory.length.clamp(0, 5),
+          itemBuilder: (context, index) {
+            final measurement = controller.measurementHistory[index];
+            return Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: ListTile(
+                title: Text(
+                  '${measurement.weight.toStringAsFixed(2)} kg',
+                  style: TextStyle(fontWeight: FontWeight.bold, color: colorScheme.primary),
+                ),
+                subtitle: Text(
+                  'RFID: ${measurement.rfid}',
+                  style: TextStyle(color: colorScheme.onSurfaceVariant),
+                ),
+                trailing: Text(
+                  measurement.timestamp,
+                  style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 12),
+                ),
+              ),
+            );
+          },
+        )),
+      ],
+    );
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\modules\introduction\introduction_binding.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\introduction\introduction_controller.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\introduction\introduction_view.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\weight_measurement\weight_measurement_binding.dart 
+import 'package:animaltracker/app/services/bluetooth_service.dart';
+import 'package:get/get.dart';
+
+class WeightMeasurementBinding implements Bindings {
+  @override
+  void dependencies() {
+    Get.put(BluetoothController());
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\modules\weight_measurement\weight_measurement_controller.dart 
+ 
+// D:\Merlab\animaltracker\lib\app\modules\weight_measurement\weight_measurement_view.dart 
+import 'package:animaltracker/app/services/bluetooth_service.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class WeightMeasurementView extends GetView<BluetoothController> {
+  const WeightMeasurementView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Ağırlık Ölçümü'),
+        backgroundColor: Colors.green,
+      ),
+      body: SafeArea(
+        child: Obx(() {
+          if (!controller.isDeviceConnected.value) {
+            return _buildNoDeviceConnectedView();
+          } else {
+            return _buildMeasurementView();
+          }
+        }),
+      ),
+    );
+  }
+
+  Widget _buildNoDeviceConnectedView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.bluetooth_disabled, size: 64, color: Colors.grey),
+          const SizedBox(height: 16),
+          const Text(
+            'Bağlı cihaz yok',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () => Get.toNamed('/devices'),
+            child: const Text('Cihaz Bağla'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMeasurementView() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildConnectedDeviceInfo(),
+          const SizedBox(height: 24),
+          _buildWeightDisplay(),
+          const SizedBox(height: 24),
+          _buildRfidDisplay(),
+          const SizedBox(height: 24),
+          _buildControlButtons(),
+          const SizedBox(height: 24),
+          _buildMeasurementHistory(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConnectedDeviceInfo() {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Bağlı Cihaz',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              controller.connectedDevice.value?.name ?? 'Bilinmeyen Cihaz',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.bluetooth_disabled),
+              label: const Text('Bağlantıyı Kes'),
+              onPressed: controller.disconnectDevice,
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWeightDisplay() {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            const Text('Ağırlık', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Obx(() => Text(
+              '${controller.currentWeight.value.toStringAsFixed(2)} kg',
+              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Colors.green),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRfidDisplay() {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            const Text('RFID', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Obx(() => Text(
+              controller.currentRfid.value,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildControlButtons() {
+    return ElevatedButton.icon(
+      icon: const Icon(Icons.save),
+      label: const Text('Ölçümü Kaydet'),
+      onPressed: controller.saveMeasurement,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+      ),
+    );
+  }
+
+  Widget _buildMeasurementHistory() {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Son Ölçümler', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Obx(() => ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: controller.measurementHistory.length.clamp(0, 5),
+              itemBuilder: (context, index) {
+                final measurement = controller.measurementHistory[index];
+                return ListTile(
+                  title: Text('${measurement.weight.toStringAsFixed(2)} kg'),
+                  subtitle: Text('RFID: ${measurement.rfid}'),
+                  trailing: Text(measurement.timestamp),
+                );
+              },
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+ 
+// D:\Merlab\animaltracker\lib\app\routes\app_pages.dart 
+import 'package:get/get.dart';
+import '../modules/home/home_view.dart';
+import '../modules/home/home_binding.dart';
+import '../modules/weight_measurement/weight_measurement_view.dart';
+import '../modules/weight_measurement/weight_measurement_binding.dart';
+import '../modules/devices/devices_view.dart';
+import '../modules/devices/devices_binding.dart';
+
+part 'app_routes.dart';
+
+class AppPages {
+  static const INITIAL = Routes.HOME;
+
+  static final routes = [
+    GetPage(
+      name: Routes.HOME,
+      page: () => HomeView(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: Routes.WEIGHT_MEASUREMENT,
+      page: () => WeightMeasurementView(),
+      binding: WeightMeasurementBinding(),
+    ),
+    GetPage(
+      name: Routes.DEVICES,
+      page: () => DevicesView(),
+      binding: DevicesBinding(),
+    ),
+  ];
+} 
+// D:\Merlab\animaltracker\lib\app\routes\app_routes.dart 
+part of 'app_pages.dart';
+
+abstract class Routes {
+  static const HOME = '/';
+  static const WEIGHT_MEASUREMENT = '/weight-measurement';
+  static const DEVICES = '/devices';
+} 
+// D:\Merlab\animaltracker\lib\app\services\bluetooth_service.dart 
+import 'package:get/get.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import '../data/models/device.dart';
+import '../data/models/measurement.dart';
+
+class BluetoothController extends GetxController {
+  RxList<Device> availableDevices = <Device>[].obs;
+  Rx<Device?> connectedDevice = Rx<Device?>(null);
+  RxBool isDeviceConnected = false.obs;
+  RxDouble currentWeight = 0.0.obs;
+  RxString currentRfid = ''.obs;
+  RxList<Measurement> measurementHistory = <Measurement>[].obs;
+
+  // Yeni eklenen Rx değişken
+  RxMap<String, bool> deviceConnectionStatus = <String, bool>{}.obs;
+
+  BluetoothDevice? _device;
+
+  Future<void> startScan() async {
+    availableDevices.clear();
+    try {
+      await FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+      FlutterBluePlus.scanResults.listen((results) {
+        for (ScanResult r in results) {
+          final device = Device(
+            id: r.device.remoteId.str,
+            name: r.device.name.isNotEmpty ? r.device.name : 'Unknown Device',
+            rssi: r.rssi,
+          );
+          if (!availableDevices.any((d) => d.id == device.id)) {
+            availableDevices.add(device);
+          }
+        }
+      });
+    } catch (e) {
+      print('Error starting scan: $e');
+    }
+  }
+
+  Future<void> connectToDevice(Device device) async {
+    try {
+      await FlutterBluePlus.stopScan();
+      _device = BluetoothDevice.fromId(device.id);
+      await _device!.connect();
+      connectedDevice.value = device;
+      isDeviceConnected.value = true;
+      deviceConnectionStatus[device.id] = true; // Bağlantı durumunu güncelle
+      _setupNotifications();
+    } catch (e) {
+      print('Error connecting to device: $e');
+      connectedDevice.value = null;
+      isDeviceConnected.value = false;
+      deviceConnectionStatus[device.id] = false; // Bağlantı durumunu güncelle
+    }
+  }
+
+  Future<void> disconnectDevice() async {
+    if (_device != null) {
+      await _device!.disconnect();
+    }
+    if (connectedDevice.value != null) {
+      deviceConnectionStatus[connectedDevice.value!.id] = false; // Bağlantı durumunu güncelle
+    }
+    connectedDevice.value = null;
+    isDeviceConnected.value = false;
+    _device = null;
+  }
+
+  void _setupNotifications() async {
+    List<BluetoothService> services = await _device!.discoverServices();
+    for (BluetoothService service in services) {
+      for (BluetoothCharacteristic characteristic in service.characteristics) {
+        if (characteristic.properties.notify) {
+          await characteristic.setNotifyValue(true);
+          characteristic.onValueReceived.listen(_processReceivedData);
+        }
+      }
+    }
+  }
+
+  void _processReceivedData(List<int> data) {
+    if (data.length == 16 && data[0] == 0x05) {
+      int rawWeight = (data[4] << 24) | (data[3] << 16) | (data[2] << 8) | data[1];
+      double weightInKg = rawWeight / 100000.0;
+
+      // Düzeltme faktörü uygula
+      weightInKg = weightInKg * (2.2 / 10746.81);
+
+      String rfid = String.fromCharCodes(data.sublist(5, 15));
+
+      currentWeight.value = weightInKg;
+      currentRfid.value = rfid;
+    }
+  }
+
+  void saveMeasurement() {
+    final newMeasurement = Measurement(
+      weight: currentWeight.value,
+      rfid: currentRfid.value,
+      timestamp: DateTime.now().toString(),
+    );
+    measurementHistory.insert(0, newMeasurement);
+    print('Measurement saved: $newMeasurement');
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\services\api\auth\auth_service.dart 
+import 'package:animaltracker/app/data/api/api_base.dart';
+import 'package:animaltracker/app/data/api/models/api_error.dart';
+import 'package:animaltracker/app/data/api/models/api_response.dart';
+import 'package:get/get.dart';
+
+class AuthService extends ApiBase {
+  AuthService() : super('https://your-api-endpoint.com');
+
+  final RxBool isLoading = false.obs;
+
+  Future<bool> login(String username, String password) async {
+    setBasicAuth(username, password);
+    // Burada bir login endpoint'ine istek atıp doğrulama yapabilirsiniz
+    final response = await get<void>('/login');
+    return response.error == null;
+  }
+
+  Future<ApiResponse<void>> sendData(Map<String, dynamic> data) async {
+    isLoading.value = true;
+    try {
+      final response = await post<void>('/data', body: data);
+      isLoading.value = false;
+
+      if (response.error == null) {
+        print('Veri başarıyla gönderildi');
+      } else {
+        print('Veri gönderme başarısız. Hata: ${response.error?.message}');
+      }
+
+      return response;
+    } catch (e) {
+      isLoading.value = false;
+      print('Veri gönderirken hata oluştu: $e');
+      return ApiResponse(error: ApiError(message: e.toString()));
+    }
+  }
+
+  Future<ApiResponse<List<Map<String, dynamic>>>> getUsers() async {
+    isLoading.value = true;
+    try {
+      final response = await get<List<Map<String, dynamic>>>('/users');
+      isLoading.value = false;
+
+      if (response.error == null) {
+        print('Kullanıcılar başarıyla alındı');
+      } else {
+        print('Kullanıcıları alma başarısız. Hata: ${response.error?.message}');
+      }
+
+      return response;
+    } catch (e) {
+      isLoading.value = false;
+      print('Kullanıcıları alırken hata oluştu: $e');
+      return ApiResponse(error: ApiError(message: e.toString()));
+    }
+  }
+} 
+// D:\Merlab\animaltracker\lib\app\widgets\device_list_item.dart 
+import 'package:flutter/material.dart';
+
+import '../data/models/device.dart';
+
+class DeviceListItem extends StatelessWidget {
+  final Device device;
+  final VoidCallback onTap;
+
+  const DeviceListItem({
+    Key? key,
+    required this.device,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: ListTile(
+        title: Text(device.name, style: TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text('RSSI: ${device.rssi} - ID: ${device.id}'),
+        trailing: ElevatedButton(
+          onPressed: onTap,
+          child: Text(device.lastData.isEmpty ? 'Bağlan' : 'Bağlantıyı Kes'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: device.lastData.isEmpty ? Colors.green : Colors.red,
+          ),
+        ),
+        onTap: onTap,
+      ),
+    );
+  }
+} 
+// D:\Merlab\animaltracker\lib\core\startup\splash_binding.dart 
+ 
+// D:\Merlab\animaltracker\lib\core\startup\splash_controller.dart 
+ 
+// D:\Merlab\animaltracker\lib\core\startup\splash_view.dart 
+ 
+// D:\Merlab\animaltracker\lib\core\theme\app_theme.dart 
+ 
