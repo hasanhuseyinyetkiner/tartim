@@ -1,5 +1,5 @@
-import 'package:animaltracker/app/data/models/device.dart';
-import 'package:animaltracker/app/modules/devices/devices_controller.dart';
+import 'package:tartim/app/data/models/device.dart';
+import 'package:tartim/app/modules/devices/devices_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -373,9 +373,9 @@ class DevicesView extends GetView<DevicesController> {
                               Row(
                                 children: [
                                   _buildSignalStrengthIndicator(
-                                      context, device.rssi),
+                                      context, device.rssi ?? -100),
                                   const SizedBox(width: 8),
-                                  Text('${device.rssi} dBm'),
+                                  Text('${device.rssi ?? "N/A"} dBm'),
                                 ],
                               ),
                               const SizedBox(height: 4),

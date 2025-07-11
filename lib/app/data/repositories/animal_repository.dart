@@ -1,7 +1,7 @@
-import 'package:animaltracker/app/data/models/animal.dart';
-import 'package:animaltracker/app/data/database/database_helper.dart';
-import 'package:animaltracker/app/services/api/api_service.dart';
-import 'package:animaltracker/app/data/api/models/api_response.dart';
+import 'package:tartim/app/data/models/animal.dart';
+import 'package:tartim/app/data/database/database_helper.dart';
+import 'package:tartim/app/services/api/api_service.dart';
+import 'package:tartim/app/data/api/models/api_response.dart';
 import 'package:get/get.dart';
 
 class AnimalRepository {

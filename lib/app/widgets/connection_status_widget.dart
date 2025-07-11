@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/services/sync_service.dart';
+import 'package:tartim/app/services/sync_service.dart';
 
 /// Bağlantı durumunu gösteren ve senkronizasyon işlemini başlatma imkanı sağlayan widget
 class ConnectionStatusWidget extends StatelessWidget {

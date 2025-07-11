@@ -1,6 +1,6 @@
-import 'package:animaltracker/app/data/repositories/measurement_repository.dart';
-import 'package:animaltracker/app/modules/devices/devices_controller.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
+import 'package:tartim/app/data/repositories/measurement_repository.dart';
+import 'package:tartim/app/modules/devices/devices_controller.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
 import 'package:get/get.dart';
 
 class DevicesBinding implements Bindings {

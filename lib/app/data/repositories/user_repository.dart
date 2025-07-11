@@ -1,4 +1,4 @@
-import 'package:animaltracker/app/data/database/database_helper.dart';
+import 'package:tartim/app/data/database/database_helper.dart';
 
 class UserRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;

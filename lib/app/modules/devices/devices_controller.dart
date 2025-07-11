@@ -1,5 +1,5 @@
-import 'package:animaltracker/app/data/models/device.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
+import 'package:tartim/app/data/models/device.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
 import 'package:get/get.dart';
 
 class DevicesController extends GetxController {

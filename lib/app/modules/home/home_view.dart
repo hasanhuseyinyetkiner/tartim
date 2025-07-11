@@ -1,5 +1,5 @@
-import 'package:animaltracker/app/modules/home/home_controller.dart';
-import 'package:animaltracker/routes/app_pages.dart';
+import 'package:tartim/app/modules/home/home_controller.dart';
+import 'package:tartim/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -405,7 +405,7 @@ class HomeView extends GetView<HomeController> {
                         color: Theme.of(context).colorScheme.primary),
                   ),
                   subtitle: Text(
-                    'RFID: ${measurement.rfid}',
+                    'RFID: ${measurement.animalRfid}',
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),

@@ -1,17 +1,17 @@
 import 'dart:convert';
-import 'package:animaltracker/app/data/api/models/api_error.dart';
-import 'package:animaltracker/app/data/api/models/api_response.dart';
+import 'package:tartim/app/data/api/models/api_error.dart';
+import 'package:tartim/app/data/api/models/api_response.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
-abstract class ApiBase extends GetxService {
-  final String baseUrl;
+class ApiBase extends GetxService {
+  String baseUrl;
   String? _basicAuth;
   Map<String, String> _headers = {
     'Content-Type': 'application/json',
   };
 
-  ApiBase(this.baseUrl);
+  ApiBase({this.baseUrl = 'https://api.example.com/'});
 
   void setBasicAuth(String username, String password) {
     String credentials = base64Encode(utf8.encode('$username:$password'));

@@ -1,4 +1,4 @@
-import 'package:animaltracker/app/data/api/models/api_error.dart';
+import 'package:tartim/app/data/api/models/api_error.dart';
 
 /// API yanıtlarını temsil eden genel sınıf
 class ApiResponse<T> {

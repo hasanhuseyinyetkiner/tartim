@@ -1,11 +1,8 @@
-<<<<<<< HEAD
 // -*- coding: utf-8 -*-
 // AI-GENERATED :: DO NOT EDIT
 
 /// UserDevice model for managing Bluetooth weight measurement devices
 
-=======
->>>>>>> 1bd7916f9bd6ef60ede69608114a2b1b32add4fe
 class UserDevice {
   final String id;
   final String name;
@@ -13,13 +10,10 @@ class UserDevice {
   final String macAddress;
   bool isOnline;
   bool isConnected;
-<<<<<<< HEAD
   final DateTime? lastSeen;
   final String? deviceModel;
   final String? firmwareVersion;
   final int? batteryLevel;
-=======
->>>>>>> 1bd7916f9bd6ef60ede69608114a2b1b32add4fe
 
   UserDevice({
     required this.id,
@@ -28,7 +22,6 @@ class UserDevice {
     required this.macAddress,
     this.isOnline = false,
     this.isConnected = false,
-<<<<<<< HEAD
     this.lastSeen,
     this.deviceModel,
     this.firmwareVersion,
@@ -147,16 +140,3 @@ class UserDevice {
 
 // Module-Summary:
 // UserDevice modeli Bluetooth ağırlık ölçüm cihazlarını yönetmek için kullanılır. JSON serialization, validasyon, durum kontrolü ve utility metodları içerir. MAC adres formatını doğrular, cihaz durumunu takip eder ve API entegrasyonu için gerekli dönüşümleri sağlar.
-=======
-  });
-
-  factory UserDevice.fromJson(Map<String, dynamic> json) {
-    return UserDevice(
-      id: json['id'],
-      name: json['name'],
-      type: json['type'],
-      macAddress: json['macAddress'],
-    );
-  }
-}
->>>>>>> 1bd7916f9bd6ef60ede69608114a2b1b32add4fe

@@ -1,32 +1,32 @@
-import 'package:animaltracker/app/modules/animal_add/animal_add_binding.dart';
-import 'package:animaltracker/app/modules/animal_add/animal_add_view.dart';
-import 'package:animaltracker/app/modules/animal_profile/animal_profile_binding.dart';
-import 'package:animaltracker/app/modules/animal_profile/animal_profile_view.dart';
-import 'package:animaltracker/app/modules/animals/animals_binding.dart';
-import 'package:animaltracker/app/modules/animals/animals_view.dart';
-import 'package:animaltracker/app/modules/auth/login/login_binding.dart';
-import 'package:animaltracker/app/modules/auth/login/login_view.dart';
-import 'package:animaltracker/app/modules/devices/devices_binding.dart';
-import 'package:animaltracker/app/modules/devices/devices_view.dart';
-import 'package:animaltracker/app/modules/home/home_binding.dart';
-import 'package:animaltracker/app/modules/home/home_view.dart';
-import 'package:animaltracker/app/modules/introduction/introduction_binding.dart';
-import 'package:animaltracker/app/modules/introduction/introduction_view.dart';
-import 'package:animaltracker/app/modules/permissions/bluetooth/bluetooth_permission_binding.dart';
-import 'package:animaltracker/app/modules/permissions/bluetooth/bluetooth_permission_view.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_binding.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_view.dart';
-import 'package:animaltracker/app/modules/agirlik_olcum/agirlik_olcum_binding.dart';
-import 'package:animaltracker/app/modules/agirlik_olcum/agirlik_olcum_view.dart';
-import 'package:animaltracker/app/modules/add_birth/add_birth_binding.dart';
-import 'package:animaltracker/app/modules/add_birth/add_birth_view.dart';
-import 'package:animaltracker/app/modules/settings/settings_binding.dart';
-import 'package:animaltracker/app/modules/settings/settings_view.dart';
-import 'package:animaltracker/core/startup/splash_binding.dart';
-import 'package:animaltracker/core/startup/splash_view.dart';
-import 'package:animaltracker/middlewares/auth_middleware.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/services/api/auth/auth_service.dart';
+import 'package:tartim/app/modules/animal_add/animal_add_binding.dart';
+import 'package:tartim/app/modules/animal_add/animal_add_view.dart';
+import 'package:tartim/app/modules/animal_profile/animal_profile_binding.dart';
+import 'package:tartim/app/modules/animal_profile/animal_profile_view.dart';
+import 'package:tartim/app/modules/animals/animals_binding.dart';
+import 'package:tartim/app/modules/animals/animals_view.dart';
+import 'package:tartim/app/modules/auth/login/login_binding.dart';
+import 'package:tartim/app/modules/auth/login/login_view.dart';
+import 'package:tartim/app/modules/devices/devices_binding.dart';
+import 'package:tartim/app/modules/devices/devices_view.dart';
+import 'package:tartim/app/modules/home/home_binding.dart';
+import 'package:tartim/app/modules/home/home_view.dart';
+import 'package:tartim/app/modules/introduction/introduction_binding.dart';
+import 'package:tartim/app/modules/introduction/introduction_view.dart';
+import 'package:tartim/app/modules/permissions/bluetooth/bluetooth_permission_binding.dart';
+import 'package:tartim/app/modules/permissions/bluetooth/bluetooth_permission_view.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_binding.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_view.dart';
+import 'package:tartim/app/modules/agirlik_olcum/agirlik_olcum_binding.dart';
+import 'package:tartim/app/modules/agirlik_olcum/agirlik_olcum_view.dart';
+import 'package:tartim/app/modules/add_birth/add_birth_binding.dart';
+import 'package:tartim/app/modules/add_birth/add_birth_view.dart';
+import 'package:tartim/app/modules/settings/settings_binding.dart';
+import 'package:tartim/app/modules/settings/settings_view.dart';
+import 'package:tartim/core/startup/splash_binding.dart';
+import 'package:tartim/core/startup/splash_view.dart';
+import 'package:tartim/middlewares/auth_middleware.dart';
+import 'package:tartim/app/services/api/auth/auth_service.dart';
 
 part 'app_routes.dart';
 
@@ -44,11 +44,11 @@ class AppPages {
       page: () => const IntroductionView(),
       binding: IntroductionBinding(),
     ),
-    GetPage(
-      name: Routes.LOGIN,
-      page: () => LoginView(),
-      binding: LoginBinding(),
-    ),
+    // GetPage(
+    //   name: Routes.LOGIN,
+    //   page: () => LoginView(),
+    //   binding: LoginBinding(),
+    // ),
     GetPage(
       name: Routes.HOME,
       page: () => const HomeView(),

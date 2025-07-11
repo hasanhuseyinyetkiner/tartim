@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
-import 'package:animaltracker/app/data/models/animal.dart';
-import 'package:animaltracker/app/data/models/animal_type.dart';
-import 'package:animaltracker/app/data/models/weight_measurement.dart';
-import 'package:animaltracker/app/data/repositories/animal_repository.dart';
-import 'package:animaltracker/app/data/repositories/animal_type_repository.dart';
-import 'package:animaltracker/app/data/repositories/measurement_repository.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
-import 'package:animaltracker/app/data/models/device.dart';
+import 'package:tartim/app/data/models/animal.dart';
+import 'package:tartim/app/data/models/animal_type.dart';
+import 'package:tartim/app/data/models/weight_measurement.dart';
+import 'package:tartim/app/data/repositories/animal_repository.dart';
+import 'package:tartim/app/data/repositories/animal_type_repository.dart';
+import 'package:tartim/app/data/repositories/measurement_repository.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
+import 'package:tartim/app/data/models/device.dart';
 import 'package:flutter/material.dart';
 
 class AddBirthController extends GetxController {
@@ -257,7 +257,7 @@ class AddBirthController extends GetxController {
 
       // Doğum ağırlığı girilmişse, ölçüm kaydı oluşturalım
       if (birthWeight != null && birthWeight > 0) {
-        final measurement = WeightMeasurement(
+        final weightMeasurement = WeightMeasurement(
           animalId: animalId,
           weight: birthWeight,
           measurementDate: DateTime.now(),
@@ -266,6 +266,7 @@ class AddBirthController extends GetxController {
           measurementType: 1, // 1: Doğum ağırlığı
         );
 
+        final measurement = weightMeasurement.toMeasurement();
         await measurementRepository.insertMeasurement(measurement);
       }
 

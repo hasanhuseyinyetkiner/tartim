@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:animaltracker/app/data/models/device.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
+import 'package:tartim/app/data/models/device.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';

@@ -1,5 +1,5 @@
-import 'package:animaltracker/app/data/repositories/auth_repository.dart';
-import 'package:animaltracker/routes/app_pages.dart';
+import 'package:tartim/app/data/repositories/auth_repository.dart';
+import 'package:tartim/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,11 +41,8 @@ class IntroductionController extends GetxController {
   void goToHome() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isFirstRun', false);
-    if (authRepository.getLoginStatus()) {
-      Get.offAllNamed(Routes.HOME);
-    } else {
-      Get.offAllNamed(Routes.LOGIN);
-    }
+    // Geçici olarak direkt Home'a git - Login kaldırıldı
+    Get.offAllNamed(Routes.HOME);
   }
 
   @override

@@ -1,4 +1,4 @@
-import 'package:animaltracker/yeni/models/user_device.dart';
+import 'package:tartim/yeni/models/user_device.dart';
 import 'package:get/get.dart';
 
 class ApiService extends GetxService {

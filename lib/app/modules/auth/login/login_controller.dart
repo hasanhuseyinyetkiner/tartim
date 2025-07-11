@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:animaltracker/app/services/api/auth/auth_service.dart';
+import 'package:tartim/app/services/api/auth/auth_service.dart';
 
 class LoginController extends GetxController {
   final AuthService authService = Get.find<AuthService>();
@@ -8,7 +8,8 @@ class LoginController extends GetxController {
   Future<bool> login(String username, String password) async {
     isLoading.value = true;
     try {
-      return await authService.login(username, password);
+      final response = await authService.login(username, password);
+      return response.success;
     } finally {
       isLoading.value = false;
     }

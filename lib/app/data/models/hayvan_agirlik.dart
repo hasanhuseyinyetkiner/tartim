@@ -1,4 +1,4 @@
-import 'package:animaltracker/app/data/models/olcum_tipi.dart';
+import 'package:tartim/app/data/models/olcum_tipi.dart';
 
 class HayvanAgirlik {
   final String rfid;

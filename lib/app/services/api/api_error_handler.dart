@@ -1,5 +1,5 @@
-import 'package:animaltracker/app/data/api/models/api_error.dart';
-import 'package:animaltracker/app/services/sync_service.dart';
+import 'package:tartim/app/data/api/models/api_error.dart';
+import 'package:tartim/app/services/sync_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

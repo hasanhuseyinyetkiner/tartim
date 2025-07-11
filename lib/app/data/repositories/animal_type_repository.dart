@@ -1,5 +1,5 @@
-import 'package:animaltracker/app/data/models/animal_type.dart';
-import 'package:animaltracker/app/data/database/database_helper.dart';
+import 'package:tartim/app/data/models/animal_type.dart';
+import 'package:tartim/app/data/database/database_helper.dart';
 
 class AnimalTypeRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;

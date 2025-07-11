@@ -1,14 +1,13 @@
-import 'package:animaltracker/app/data/api/api_base.dart';
-import 'package:animaltracker/app/data/api/models/api_response.dart';
-import 'package:animaltracker/app/data/api/models/api_error.dart';
-import 'package:animaltracker/app/data/models/measurement.dart';
-import 'package:animaltracker/app/data/models/olcum_tipi.dart';
+import 'package:tartim/app/data/api/api_base.dart';
+import 'package:tartim/app/data/api/models/api_response.dart';
+import 'package:tartim/app/data/api/models/api_error.dart';
+import 'package:tartim/app/data/models/measurement.dart';
+import 'package:tartim/app/data/models/olcum_tipi.dart';
 import 'package:get/get.dart';
 
 class WeightMeasurementApiService extends ApiBase {
-  WeightMeasurementApiService(
-      {String baseUrl = 'http://82.25.101.117:5000/api'})
-      : super(baseUrl);
+  WeightMeasurementApiService()
+      : super(baseUrl: 'http://82.25.101.117:5000/api');
 
   final RxBool isLoading = false.obs;
 
@@ -47,7 +46,7 @@ class WeightMeasurementApiService extends ApiBase {
     try {
       final response = await post<Map<String, dynamic>>('/MobilOlcum', body: {
         'Weight': measurement.weight,
-        'Rfid': measurement.rfid,
+        'Rfid': measurement.animalRfid,
         'Tarih': measurement.timestamp,
         'OlcumTipi': measurement.olcumTipi.value,
         'Amac': measurement.olcumTipi.displayName,
@@ -69,7 +68,7 @@ class WeightMeasurementApiService extends ApiBase {
       final List<Map<String, dynamic>> measurementMaps = measurements
           .map((m) => {
                 'Weight': m.weight,
-                'Rfid': m.rfid,
+                'Rfid': m.animalRfid,
                 'Tarih': m.timestamp,
                 'OlcumTipi': m.olcumTipi.value,
                 'Amac': m.olcumTipi.displayName,
@@ -243,7 +242,7 @@ class WeightMeasurementApiService extends ApiBase {
           await put<Map<String, dynamic>>('/MobilOlcum/$id', body: {
         'Id': id,
         'Weight': measurement.weight,
-        'Rfid': measurement.rfid,
+        'Rfid': measurement.animalRfid,
         'Tarih': measurement.timestamp,
         'OlcumTipi': measurement.olcumTipi.value,
         'Amac': measurement.olcumTipi.displayName,

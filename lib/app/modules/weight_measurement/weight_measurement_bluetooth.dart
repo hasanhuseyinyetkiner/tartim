@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:animaltracker/app/data/models/device.dart';
-import 'package:animaltracker/app/data/models/measurement.dart';
-import 'package:animaltracker/app/data/models/olcum_tipi.dart';
-import 'package:animaltracker/app/data/repositories/measurement_repository.dart';
+import 'package:tartim/app/data/models/device.dart';
+import 'package:tartim/app/data/models/measurement.dart';
+import 'package:tartim/app/data/models/olcum_tipi.dart';
+import 'package:tartim/app/data/repositories/measurement_repository.dart';
 import 'package:get/get.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
@@ -43,6 +43,7 @@ class WeightMeasurementBluetooth extends GetxController {
           final device = Device(
             id: r.device.remoteId.str,
             name: r.device.name.isNotEmpty ? r.device.name : 'Unknown Device',
+            address: r.device.remoteId.str,
             rssi: r.rssi,
           );
           if (!availableDevices.any((d) => d.id == device.id)) {
@@ -141,7 +142,7 @@ class WeightMeasurementBluetooth extends GetxController {
       // Geçici ölçümü kaydet
       await measurementRepository.insertTempMeasurement(Measurement(
         weight: weightInKg,
-        rfid: rfid,
+        animalRfid: rfid,
         timestamp: DateTime.now().toIso8601String(),
         olcumTipi: currentOlcumTipi.value,
       ));

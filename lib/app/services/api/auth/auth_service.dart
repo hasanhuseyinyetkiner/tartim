@@ -1,89 +1,204 @@
-// class AuthService extends ApiBase {
-//   AuthService() : super('https://your-api-endpoint.com');
-//
-//   final RxBool isLoading = false.obs;
-//
-//   Future<bool> login(String username, String password) async {
-//     setBasicAuth(username, password);
-//     // Burada bir login endpoint'ine istek atıp doğrulama yapabilirsiniz
-//     final response = await get<void>('/login');
-//     return response.error == null;
-//   }
-//
-//   Future<ApiResponse<void>> sendData(Map<String, dynamic> data) async {
-//     isLoading.value = true;
-//     try {
-//       final response = await post<void>('/data', body: data);
-//       isLoading.value = false;
-//
-//       if (response.error == null) {
-//         print('Veri başarıyla gönderildi');
-//       } else {
-//         print('Veri gönderme başarısız. Hata: ${response.error?.message}');
-//       }
-//
-//       return response;
-//     } catch (e) {
-//       isLoading.value = false;
-//       print('Veri gönderirken hata oluştu: $e');
-//       return ApiResponse(error: ApiError(message: e.toString()));
-//     }
-//   }
-//
-//   Future<ApiResponse<List<Map<String, dynamic>>>> getUsers() async {
-//     isLoading.value = true;
-//     try {
-//       final response = await get<List<Map<String, dynamic>>>('/users');
-//       isLoading.value = false;
-//
-//       if (response.error == null) {
-//         print('Kullanıcılar başarıyla alındı');
-//       } else {
-//         print('Kullanıcıları alma başarısız. Hata: ${response.error?.message}');
-//       }
-//
-//       return response;
-//     } catch (e) {
-//       isLoading.value = false;
-//       print('Kullanıcıları alırken hata oluştu: $e');
-//       return ApiResponse(error: ApiError(message: e.toString()));
-//     }
-//   }
-// }
-
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tartim/app/data/api/api_base.dart';
+import 'package:tartim/app/data/api/models/api_response.dart';
+import 'package:tartim/app/data/api/models/api_error.dart';
 
 class AuthService extends GetxService {
-  final _storage = GetStorage();
-  final RxBool _isAuthenticated = false.obs;
+  late final ApiBase _apiBase;
+  final RxBool isAuthenticated = false.obs;
+  final RxBool isLoading = false.obs;
+  final RxString currentUser = ''.obs;
+  final RxString token = ''.obs;
 
-  // Varsayılan kullanıcı bilgileri
-  final String _defaultUsername = 'admin';
-  final String _defaultPassword = '1234';
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    _apiBase = ApiBase();
+    await _checkAuthStatus();
+  }
 
-  bool get isAuthenticated => _isAuthenticated.value;
-
-  Future<bool> login(String username, String password) async {
-    if (username == _defaultUsername && password == _defaultPassword) {
-      _isAuthenticated.value = true;
-      await _storage.write('isLoggedIn', true);
-      return true;
+  Future<void> _checkAuthStatus() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedToken = prefs.getString('auth_token');
+      final savedUser = prefs.getString('current_user');
+      
+      if (savedToken != null && savedToken.isNotEmpty) {
+        token.value = savedToken;
+        currentUser.value = savedUser ?? '';
+        isAuthenticated.value = true;
+        
+        // API headers'ını güncelle
+        _apiBase.setHeaders({
+          'Authorization': 'Bearer $savedToken',
+          'Content-Type': 'application/json',
+        });
+      }
+    } catch (e) {
+      print('Auth durumu kontrol edilirken hata: $e');
     }
-    return false;
+  }
+
+  Future<ApiResponse> login(String username, String password) async {
+    try {
+      isLoading.value = true;
+      
+      final response = await _apiBase.post('/auth/login', body: {
+        'username': username,
+        'password': password,
+      });
+
+      if (response.success && response.data != null) {
+        final data = response.data as Map<String, dynamic>;
+        final authToken = data['token'] as String?;
+        final user = data['user'] as String?;
+
+        if (authToken != null) {
+          await _saveAuthData(authToken, user ?? username);
+          isAuthenticated.value = true;
+        }
+      }
+
+      return response;
+    } catch (e) {
+      return ApiResponse(
+        success: false,
+        error: ApiError(message: 'Giriş yaparken hata oluştu: $e'),
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> _saveAuthData(String authToken, String username) async {
+    try {
+      token.value = authToken;
+      currentUser.value = username;
+      
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('auth_token', authToken);
+      await prefs.setString('current_user', username);
+      
+      // API headers'ını güncelle
+      _apiBase.setHeaders({
+        'Authorization': 'Bearer $authToken',
+        'Content-Type': 'application/json',
+      });
+    } catch (e) {
+      print('Auth verileri kaydedilirken hata: $e');
+    }
   }
 
   Future<void> logout() async {
-    _isAuthenticated.value = false;
-    await _storage.remove('isLoggedIn');
+    try {
+      isLoading.value = true;
+      
+      // Sunucuya logout isteği gönder
+      await _apiBase.post('/auth/logout', body: {});
+      
+      // Yerel verileri temizle
+      await _clearAuthData();
+    } catch (e) {
+      print('Logout yapılırken hata: $e');
+      // Hata olsa bile yerel verileri temizle
+      await _clearAuthData();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  // Uygulama başladığında oturum durumunu kontrol et
-  Future<void> checkAuthStatus() async {
-    _isAuthenticated.value = _storage.read('isLoggedIn') ?? false;
+  Future<void> _clearAuthData() async {
+    try {
+      token.value = '';
+      currentUser.value = '';
+      isAuthenticated.value = false;
+      
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('auth_token');
+      await prefs.remove('current_user');
+      
+      // API headers'ını temizle
+      _apiBase.setHeaders({
+        'Content-Type': 'application/json',
+      });
+    } catch (e) {
+      print('Auth verileri temizlenirken hata: $e');
+    }
+  }
+
+  Future<ApiResponse> register(String username, String email, String password) async {
+    try {
+      isLoading.value = true;
+      
+      final response = await _apiBase.post('/auth/register', body: {
+        'username': username,
+        'email': email,
+        'password': password,
+      });
+
+      return response;
+    } catch (e) {
+      return ApiResponse(
+        success: false,
+        error: ApiError(message: 'Kayıt olurken hata oluştu: $e'),
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<ApiResponse> refreshToken() async {
+    try {
+      if (token.value.isEmpty) {
+        return ApiResponse(
+          success: false,
+          error: ApiError(message: 'Token bulunamadı'),
+        );
+      }
+
+      final response = await _apiBase.post('/auth/refresh', body: {
+        'token': token.value,
+      });
+
+      if (response.success && response.data != null) {
+        final data = response.data as Map<String, dynamic>;
+        final newToken = data['token'] as String?;
+        
+        if (newToken != null) {
+          await _saveAuthData(newToken, currentUser.value);
+        }
+      }
+
+      return response;
+    } catch (e) {
+      return ApiResponse(
+        success: false,
+        error: ApiError(message: 'Token yenilenirken hata oluştu: $e'),
+      );
+    }
+  }
+
+  // Token geçerlilik kontrol
+  bool get hasValidToken => token.value.isNotEmpty && isAuthenticated.value;
+
+  // Kullanıcı bilgilerini getir
+  Future<ApiResponse> getUserProfile() async {
+    try {
+      if (!hasValidToken) {
+        return ApiResponse(
+          success: false,
+          error: ApiError(message: 'Kimlik doğrulaması gerekli'),
+        );
+      }
+
+      final response = await _apiBase.get('/auth/profile');
+      return response;
+    } catch (e) {
+      return ApiResponse(
+        success: false,
+        error: ApiError(message: 'Profil bilgileri alınırken hata oluştu: $e'),
+      );
+    }
   }
 }
-
-// Kimlik doğrulama servisi
-// - Giriş/çıkış işlemleri
-// - Kullanıcı yönetimi

@@ -1,11 +1,11 @@
-import 'package:animaltracker/app/data/models/olcum_tipi.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_controller.dart';
+import 'package:tartim/app/data/models/olcum_tipi.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
-import 'package:animaltracker/routes/app_pages.dart';
+import 'package:tartim/routes/app_pages.dart';
 
 class WeightMeasurementView extends GetView<WeightMeasurementController> {
   const WeightMeasurementView({Key? key}) : super(key: key);
@@ -742,7 +742,7 @@ class WeightMeasurementView extends GetView<WeightMeasurementController> {
                       child: Text('${index + 1}'),
                     ),
                     title: Text('${measurement.weight.toStringAsFixed(2)} kg'),
-                    subtitle: Text('RFID: ${measurement.rfid}'),
+                    subtitle: Text('RFID: ${measurement.animalRfid}'),
                     trailing: Text(measurement.timestamp),
                   );
                 },
@@ -812,7 +812,7 @@ class WeightMeasurementView extends GetView<WeightMeasurementController> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('RFID: ${measurement.rfid}'),
+                        Text('RFID: ${measurement.animalRfid}'),
                         Text('Tarih: $formattedDate'),
                         Text('Tip: ${measurement.olcumTipi.displayName}'),
                       ],

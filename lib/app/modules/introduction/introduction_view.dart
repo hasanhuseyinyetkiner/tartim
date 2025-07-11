@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'introduction_controller.dart';
 import 'package:lottie/lottie.dart';
-import 'package:animaltracker/routes/app_pages.dart';
+import 'package:tartim/routes/app_pages.dart';
 
 class IntroductionView extends GetView<IntroductionController> {
   const IntroductionView({super.key});

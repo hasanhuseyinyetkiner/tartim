@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:animaltracker/app/data/models/weight_measurement.dart';
-import 'package:animaltracker/app/data/models/birth_weight_measurement.dart';
-import 'package:animaltracker/app/data/models/weaning_weight_measurement.dart';
-import 'package:animaltracker/app/data/models/olcum_tipi.dart';
+import 'package:tartim/app/data/models/weight_measurement.dart';
+import 'package:tartim/app/data/models/birth_weight_measurement.dart';
+import 'package:tartim/app/data/models/weaning_weight_measurement.dart';
+import 'package:tartim/app/data/models/olcum_tipi.dart';
 import 'package:intl/intl.dart';
 
 class AddWeightDialog extends StatefulWidget {

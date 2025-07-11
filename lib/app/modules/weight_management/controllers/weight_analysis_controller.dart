@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:animaltracker/app/data/models/animal.dart';
-import 'package:animaltracker/app/data/models/measurement.dart';
-import 'package:animaltracker/app/data/models/weight_measurement.dart';
-import 'package:animaltracker/app/data/repositories/animal_repository.dart';
-import 'package:animaltracker/app/data/repositories/measurement_repository.dart';
+import 'package:tartim/app/data/models/animal.dart';
+import 'package:tartim/app/data/models/measurement.dart';
+import 'package:tartim/app/data/models/weight_measurement.dart';
+import 'package:tartim/app/data/repositories/animal_repository.dart';
+import 'package:tartim/app/data/repositories/measurement_repository.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 
@@ -11,7 +11,7 @@ extension WeightMeasurementConverter on WeightMeasurement {
   Measurement toMeasurement() {
     return Measurement(
       weight: weight,
-      rfid: rfid,
+      animalRfid: rfid,
       timestamp: measurementDate.toIso8601String(),
     );
   }

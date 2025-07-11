@@ -1,10 +1,10 @@
-import 'package:animaltracker/app/services/api/auth/auth_service.dart';
-import 'package:animaltracker/app/services/api/api_service.dart';
-import 'package:animaltracker/app/services/connectivity_service.dart';
-import 'package:animaltracker/app/services/sync_service.dart';
-import 'package:animaltracker/core/theme/app_theme.dart';
-import 'package:animaltracker/routes/app_pages.dart';
-import 'package:animaltracker/translations/app_translations.dart';
+import 'package:tartim/app/services/api/auth/auth_service.dart';
+import 'package:tartim/app/services/api/api_service.dart';
+import 'package:tartim/app/services/connectivity_service.dart';
+import 'package:tartim/app/services/sync_service.dart';
+import 'package:tartim/core/theme/app_theme.dart';
+import 'package:tartim/routes/app_pages.dart';
+import 'package:tartim/translations/app_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';

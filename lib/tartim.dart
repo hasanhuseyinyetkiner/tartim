@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /// Tartim - Weight Measurement Package
 ///
 /// A comprehensive Flutter package for weight measurement functionality
@@ -41,10 +40,3 @@ const String packageDescription =
     'with Bluetooth integration, data synchronization, and local storage capabilities.';
 
 // REQUIRES: flutter_blue_plus, get, http, shared_preferences, get_storage, sqflite, intl, path
-=======
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
->>>>>>> 1bd7916f9bd6ef60ede69608114a2b1b32add4fe

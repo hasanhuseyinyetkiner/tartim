@@ -1,5 +1,5 @@
-import 'package:animaltracker/app/data/repositories/auth_repository.dart';
-import 'package:animaltracker/routes/app_pages.dart';
+import 'package:tartim/app/data/repositories/auth_repository.dart';
+import 'package:tartim/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,10 +23,9 @@ class SplashController extends GetxController {
 
     if (isFirstRun) {
       Get.offAllNamed(Routes.INTRODUCTION);
-    } else if (authRepository.getLoginStatus()) {
-      Get.offAllNamed(Routes.HOME);
     } else {
-      Get.offAllNamed(Routes.LOGIN);
+      // Geçici olarak direkt Home'a git - Login kaldırıldı
+      Get.offAllNamed(Routes.HOME);
     }
   }
 }

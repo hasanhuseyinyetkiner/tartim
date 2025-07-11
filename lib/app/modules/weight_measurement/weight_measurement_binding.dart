@@ -1,10 +1,10 @@
-import 'package:animaltracker/app/data/repositories/measurement_repository.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
-import 'package:animaltracker/app/services/api/weight_measurement_service.dart';
+import 'package:tartim/app/data/repositories/measurement_repository.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
+import 'package:tartim/app/services/api/weight_measurement_service.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/data/repositories/animal_repository.dart';
-import 'package:animaltracker/app/data/repositories/animal_type_repository.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_controller.dart';
+import 'package:tartim/app/data/repositories/animal_repository.dart';
+import 'package:tartim/app/data/repositories/animal_type_repository.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_controller.dart';
 
 class WeightMeasurementBinding extends Bindings {
   @override

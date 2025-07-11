@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/modules/auth/login/login_controller.dart';
-import 'package:animaltracker/routes/app_pages.dart';
+import 'package:tartim/app/modules/auth/login/login_controller.dart';
+import 'package:tartim/routes/app_pages.dart';
 
 class LoginView extends GetView<LoginController> {
   LoginView({Key? key}) : super(key: key);

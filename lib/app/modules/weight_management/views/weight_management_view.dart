@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/data/models/weight_measurement.dart';
-import 'package:animaltracker/app/data/models/birth_weight_measurement.dart';
-import 'package:animaltracker/app/data/models/weaning_weight_measurement.dart';
+import 'package:tartim/app/data/models/weight_measurement.dart';
+import 'package:tartim/app/data/models/birth_weight_measurement.dart';
+import 'package:tartim/app/data/models/weaning_weight_measurement.dart';
 import '../controllers/weight_management_controller.dart';
 import '../widgets/weight_list_item.dart';
 import '../widgets/add_weight_dialog.dart';
@@ -229,12 +229,12 @@ class WeightManagementView extends GetView<WeightManagementController> {
     showDialog(
       context: context,
       builder: (context) => AddWeightDialog(
-        type: currentTab == 0
-            ? WeightMeasurementType.normal
+        initialOlcumTipi: currentTab == 0
+            ? OlcumTipi.normal
             : currentTab == 1
-                ? WeightMeasurementType.weaning
-                : WeightMeasurementType.birth,
-        onSave: (data) {
+                ? OlcumTipi.suttenKesim
+                : OlcumTipi.yeniDogmus,
+        onSave: (data, olcumTipi) {
           if (currentTab == 0) {
             controller.addNormalWeightMeasurement(data as WeightMeasurement);
           } else if (currentTab == 1) {
@@ -253,35 +253,35 @@ class WeightManagementView extends GetView<WeightManagementController> {
       {WeightMeasurement? normalMeasurement,
       WeaningWeightMeasurement? weaningMeasurement,
       BirthWeightMeasurement? birthMeasurement}) {
-    WeightMeasurementType type = WeightMeasurementType.normal;
     Object? data;
 
     if (normalMeasurement != null) {
-      type = WeightMeasurementType.normal;
       data = normalMeasurement;
     } else if (weaningMeasurement != null) {
-      type = WeightMeasurementType.weaning;
       data = weaningMeasurement;
     } else if (birthMeasurement != null) {
-      type = WeightMeasurementType.birth;
       data = birthMeasurement;
     }
 
     showDialog(
       context: context,
       builder: (context) => AddWeightDialog(
-        type: type,
+        initialOlcumTipi: normalMeasurement != null
+            ? OlcumTipi.normal
+            : weaningMeasurement != null
+                ? OlcumTipi.suttenKesim
+                : OlcumTipi.yeniDogmus,
         initialData: data,
-        onSave: (data) {
-          if (type == WeightMeasurementType.normal) {
+        onSave: (data, olcumTipi) {
+          if (normalMeasurement != null) {
             controller.updateNormalWeightMeasurement(
-                normalMeasurement!.id!, data as WeightMeasurement);
-          } else if (type == WeightMeasurementType.weaning) {
+                normalMeasurement.id!, data as WeightMeasurement);
+          } else if (weaningMeasurement != null) {
             controller.updateWeaningWeightMeasurement(
-                weaningMeasurement!.id!, data as WeaningWeightMeasurement);
-          } else {
+                weaningMeasurement.id!, data as WeaningWeightMeasurement);
+          } else if (birthMeasurement != null) {
             controller.updateBirthWeightMeasurement(
-                birthMeasurement!.id!, data as BirthWeightMeasurement);
+                birthMeasurement.id!, data as BirthWeightMeasurement);
           }
         },
       ),

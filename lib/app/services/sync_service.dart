@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:animaltracker/app/data/models/animal.dart';
-import 'package:animaltracker/app/data/models/weight_measurement.dart';
-import 'package:animaltracker/app/services/api/api_service.dart';
+import 'package:tartim/app/data/models/animal.dart';
+import 'package:tartim/app/data/models/weight_measurement.dart';
+import 'package:tartim/app/services/api/api_service.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 

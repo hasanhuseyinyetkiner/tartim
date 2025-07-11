@@ -2,24 +2,17 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:animaltracker/app/data/models/animal.dart';
-import 'package:animaltracker/app/data/models/animal_type.dart';
-import 'package:animaltracker/app/data/repositories/animal_repository.dart';
-import 'package:animaltracker/app/data/repositories/animal_type_repository.dart';
-import 'package:animaltracker/app/data/repositories/measurement_repository.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
+import 'package:tartim/app/data/models/animal.dart';
+import 'package:tartim/app/data/models/animal_type.dart';
+import 'package:tartim/app/data/repositories/animal_repository.dart';
+import 'package:tartim/app/data/repositories/animal_type_repository.dart';
+import 'package:tartim/app/data/repositories/measurement_repository.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:animaltracker/app/data/models/device.dart';
+import 'package:tartim/app/data/models/device.dart';
+import 'package:tartim/app/data/models/weight_measurement.dart';
 
-// Ağırlık grafiği için filtre seçenekleri
-enum WeightChartFilter {
-  last7Days,
-  last30Days,
-  last90Days,
-  last6Months,
-  lastYear,
-  custom
-}
+
 
 // Hayvan türleri için enum oluşturma
 enum AnimalTypeEnum {
@@ -145,6 +138,20 @@ class AnimalProfileController extends GetxController {
               .toList()
               .obs;
         }
+        return measurements.obs;
+      case WeightChartFilter.lastWeek:
+        final cutoff = now.subtract(const Duration(days: 7));
+        return measurements.where((m) => m.date.isAfter(cutoff)).toList().obs;
+      case WeightChartFilter.lastMonth:
+        final cutoff = now.subtract(const Duration(days: 30));
+        return measurements.where((m) => m.date.isAfter(cutoff)).toList().obs;
+      case WeightChartFilter.lastThreeMonths:
+        final cutoff = now.subtract(const Duration(days: 90));
+        return measurements.where((m) => m.date.isAfter(cutoff)).toList().obs;
+      case WeightChartFilter.lastSixMonths:
+        final cutoff = DateTime(now.year, now.month - 6, now.day);
+        return measurements.where((m) => m.date.isAfter(cutoff)).toList().obs;
+      case WeightChartFilter.all:
         return measurements.obs;
     }
   }

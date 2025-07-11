@@ -1,4 +1,4 @@
-import 'package:animaltracker/app/data/repositories/auth_repository.dart';
+import 'package:tartim/app/data/repositories/auth_repository.dart';
 import 'package:get/get.dart';
 import 'splash_controller.dart';
 

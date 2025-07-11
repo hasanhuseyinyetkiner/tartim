@@ -1,13 +1,13 @@
-import 'package:animaltracker/app/data/models/animal.dart';
-import 'package:animaltracker/routes/app_pages.dart';
+import 'package:tartim/app/data/models/animal.dart';
+import 'package:tartim/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/modules/animals/animals_controller.dart';
+import 'package:tartim/app/modules/animals/animals_controller.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:animaltracker/app/widgets/chart_widget.dart';
+import 'package:tartim/app/widgets/chart_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:animaltracker/app/data/models/animal_type.dart';
-import 'package:animaltracker/app/widgets/connection_status_widget.dart';
+import 'package:tartim/app/data/models/animal_type.dart';
+import 'package:tartim/app/widgets/connection_status_widget.dart';
 
 class AnimalsView extends GetView<AnimalsController> {
   const AnimalsView({Key? key}) : super(key: key);
@@ -203,6 +203,34 @@ class AnimalsView extends GetView<AnimalsController> {
                 case SortOption.weightGain:
                   sortText = 'En Çok Kilo Alanlar';
                   sortIcon = Icons.trending_up;
+                  break;
+                case SortOption.ageAscending:
+                  sortText = 'Yaş (Artan)';
+                  sortIcon = Icons.cake;
+                  break;
+                case SortOption.ageDescending:
+                  sortText = 'Yaş (Azalan)';
+                  sortIcon = Icons.cake;
+                  break;
+                case SortOption.weightAscending:
+                  sortText = 'Ağırlık (Küçükten Büyüğe)';
+                  sortIcon = Icons.monitor_weight;
+                  break;
+                case SortOption.weightDescending:
+                  sortText = 'Ağırlık (Büyükten Küçüğe)';
+                  sortIcon = Icons.monitor_weight;
+                  break;
+                case SortOption.nameAscending:
+                  sortText = 'İsim (A-Z)';
+                  sortIcon = Icons.sort_by_alpha;
+                  break;
+                case SortOption.nameDescending:
+                  sortText = 'İsim (Z-A)';
+                  sortIcon = Icons.sort_by_alpha;
+                  break;
+                case SortOption.dateAscending:
+                  sortText = 'Tarih (Eskiden Yeniye)';
+                  sortIcon = Icons.access_time;
                   break;
               }
 

@@ -1,14 +1,13 @@
-import 'package:animaltracker/app/data/api/api_base.dart';
-import 'package:animaltracker/app/data/api/models/api_response.dart';
-import 'package:animaltracker/app/data/api/models/api_error.dart';
-import 'package:animaltracker/app/data/models/weight_measurement.dart';
-import 'package:animaltracker/app/data/models/birth_weight_measurement.dart';
-import 'package:animaltracker/app/data/models/weaning_weight_measurement.dart';
+import 'package:tartim/app/data/api/api_base.dart';
+import 'package:tartim/app/data/api/models/api_response.dart';
+import 'package:tartim/app/data/api/models/api_error.dart';
+import 'package:tartim/app/data/models/weight_measurement.dart';
+import 'package:tartim/app/data/models/birth_weight_measurement.dart';
+import 'package:tartim/app/data/models/weaning_weight_measurement.dart';
 import 'package:get/get.dart';
 
 class WeightService extends ApiBase {
-  WeightService({String baseUrl = 'http://82.25.101.117:5000/api'})
-      : super(baseUrl);
+  WeightService() : super(baseUrl: 'http://82.25.101.117:5000/api');
 
   final RxBool isLoading = false.obs;
 

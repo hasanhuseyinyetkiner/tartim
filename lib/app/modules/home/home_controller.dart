@@ -1,9 +1,9 @@
-import 'package:animaltracker/app/data/models/measurement.dart';
-import 'package:animaltracker/app/data/repositories/auth_repository.dart';
-import 'package:animaltracker/app/data/repositories/measurement_repository.dart';
-import 'package:animaltracker/app/data/repositories/user_repository.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
-import 'package:animaltracker/routes/app_pages.dart';
+import 'package:tartim/app/data/models/measurement.dart';
+import 'package:tartim/app/data/repositories/auth_repository.dart';
+import 'package:tartim/app/data/repositories/measurement_repository.dart';
+import 'package:tartim/app/data/repositories/user_repository.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
+import 'package:tartim/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
@@ -58,7 +58,8 @@ class HomeController extends GetxController {
   void logout() async {
     await userRepository.logout();
     await authRepository.saveLoginStatus(false);
-    Get.offAllNamed(Routes.LOGIN);
+    // Geçici olarak Home'da kal - Login kaldırıldı
+    // Get.offAllNamed(Routes.LOGIN);
   }
 
   Future<void> fetchLastMeasurement() async {

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:animaltracker/app/modules/weight_management/bindings/weight_analysis_binding.dart';
-import 'package:animaltracker/app/modules/weight_management/views/weight_analysis_view.dart';
+import 'package:tartim/app/modules/weight_management/bindings/weight_analysis_binding.dart';
+import 'package:tartim/app/modules/weight_management/views/weight_analysis_view.dart';
 
 part 'app_routes.dart';
 

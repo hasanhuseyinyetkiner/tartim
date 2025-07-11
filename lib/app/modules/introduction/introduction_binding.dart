@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:animaltracker/app/modules/introduction/introduction_controller.dart';
-import 'package:animaltracker/app/data/repositories/auth_repository.dart';
+import 'package:tartim/app/modules/introduction/introduction_controller.dart';
+import 'package:tartim/app/data/repositories/auth_repository.dart';
 
 class IntroductionBinding extends Bindings {
   @override

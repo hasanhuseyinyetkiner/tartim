@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:animaltracker/app/data/models/measurement.dart';
+import 'package:tartim/app/data/models/measurement.dart';
 import '../controllers/weight_analysis_controller.dart';
 
 class WeightAnalysisView extends GetView<WeightAnalysisController> {

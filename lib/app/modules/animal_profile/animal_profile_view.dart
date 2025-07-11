@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/modules/animal_profile/animal_profile_controller.dart';
+import 'package:tartim/app/modules/animal_profile/animal_profile_controller.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
-import 'package:animaltracker/app/data/models/animal.dart';
-import 'package:animaltracker/app/data/models/device.dart';
+import 'package:tartim/app/data/models/animal.dart';
+import 'package:tartim/app/data/models/device.dart';
 
 class AnimalProfileView extends GetView<AnimalProfileController> {
   const AnimalProfileView({Key? key}) : super(key: key);

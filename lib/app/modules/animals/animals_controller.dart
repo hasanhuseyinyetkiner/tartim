@@ -1,38 +1,30 @@
-import 'package:animaltracker/app/data/models/measurement.dart';
-import 'package:animaltracker/app/data/repositories/measurement_repository.dart';
+import 'package:tartim/app/data/models/measurement.dart';
+import 'package:tartim/app/data/repositories/measurement_repository.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/data/models/animal.dart';
-import 'package:animaltracker/app/data/models/animal_type.dart';
-import 'package:animaltracker/app/data/repositories/animal_repository.dart';
-import 'package:animaltracker/app/data/repositories/animal_type_repository.dart';
-import 'package:animaltracker/app/services/sync_service.dart';
-import 'package:animaltracker/app/services/connectivity_service.dart';
-import 'package:animaltracker/app/services/api/api_service.dart';
-import 'package:animaltracker/app/services/api/api_error_handler.dart';
-import 'package:animaltracker/app/data/api/models/api_error.dart';
+import 'package:tartim/app/data/models/animal.dart';
+import 'package:tartim/app/data/models/animal_type.dart';
+import 'package:tartim/app/data/repositories/animal_repository.dart';
+import 'package:tartim/app/data/repositories/animal_type_repository.dart';
+import 'package:tartim/app/services/sync_service.dart';
+import 'package:tartim/app/services/connectivity_service.dart';
+import 'package:tartim/app/services/api/api_service.dart';
+import 'package:tartim/app/services/api/api_error_handler.dart';
+import 'package:tartim/app/data/api/models/api_error.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:animaltracker/app/data/models/weight_measurement.dart';
+import 'package:tartim/app/data/models/weight_measurement.dart';
 
 extension WeightMeasurementConverter on WeightMeasurement {
   Measurement toMeasurement() {
     return Measurement(
       weight: weight,
-      rfid: rfid,
+      animalRfid: rfid,
       timestamp: measurementDate.toIso8601String(),
     );
   }
 }
 
-enum SortOption {
-  nameAsc,
-  nameDesc,
-  weightAsc,
-  weightDesc,
-  latest,
-  oldest,
-  weightGain,
-}
+
 
 class AnimalsController extends GetxController {
   final AnimalRepository animalRepository;
@@ -168,6 +160,39 @@ class AnimalsController extends GetxController {
         break;
       case SortOption.weightGain:
         fetchAnimalsByWeightGain();
+        break;
+      case SortOption.ageAscending:
+        animalList.sort((a, b) => (a.age ?? 0).compareTo(b.age ?? 0));
+        break;
+      case SortOption.ageDescending:
+        animalList.sort((a, b) => (b.age ?? 0).compareTo(a.age ?? 0));
+        break;
+      case SortOption.weightAscending:
+        animalList.sort((a, b) {
+          final weightA = lastMeasurements[a.rfid]?.weight ?? 0;
+          final weightB = lastMeasurements[b.rfid]?.weight ?? 0;
+          return weightA.compareTo(weightB);
+        });
+        break;
+      case SortOption.weightDescending:
+        animalList.sort((a, b) {
+          final weightA = lastMeasurements[a.rfid]?.weight ?? 0;
+          final weightB = lastMeasurements[b.rfid]?.weight ?? 0;
+          return weightB.compareTo(weightA);
+        });
+        break;
+      case SortOption.nameAscending:
+        animalList.sort((a, b) => a.name.compareTo(b.name));
+        break;
+      case SortOption.nameDescending:
+        animalList.sort((a, b) => b.name.compareTo(a.name));
+        break;
+      case SortOption.dateAscending:
+        animalList.sort((a, b) {
+          final dateA = a.createdAt ?? DateTime.now();
+          final dateB = b.createdAt ?? DateTime.now();
+          return dateA.compareTo(dateB);
+        });
         break;
     }
     return animalList;

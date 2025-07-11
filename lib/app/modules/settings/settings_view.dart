@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/modules/settings/settings_controller.dart';
-import 'package:animaltracker/app/data/models/device.dart';
+import 'package:tartim/app/modules/settings/settings_controller.dart';
+import 'package:tartim/app/data/models/device.dart';
 import 'package:lottie/lottie.dart';
 
 class SettingsView extends GetView<SettingsController> {

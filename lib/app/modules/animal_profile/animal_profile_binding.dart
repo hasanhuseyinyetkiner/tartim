@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:animaltracker/app/data/repositories/animal_repository.dart';
-import 'package:animaltracker/app/data/repositories/animal_type_repository.dart';
-import 'package:animaltracker/app/data/repositories/measurement_repository.dart';
-import 'package:animaltracker/app/modules/animal_profile/animal_profile_controller.dart';
+import 'package:tartim/app/data/repositories/animal_repository.dart';
+import 'package:tartim/app/data/repositories/animal_type_repository.dart';
+import 'package:tartim/app/data/repositories/measurement_repository.dart';
+import 'package:tartim/app/modules/animal_profile/animal_profile_controller.dart';
 
 class AnimalProfileBinding extends Bindings {
   @override

@@ -1,8 +1,10 @@
 import 'package:intl/intl.dart';
+import 'package:tartim/app/data/models/measurement.dart';
+import 'package:tartim/app/data/models/olcum_tipi.dart';
 
 class WeightMeasurement {
   final int? id;
-  final int animalId; // Karşılık: HayvanId
+  final int? animalId; // Karşılık: HayvanId - nullable yapıldı
   final double weight; // Karşılık: Weight
   final DateTime measurementDate; // Karşılık: Tarih
   final String rfid; // Karşılık: Rfid
@@ -14,7 +16,7 @@ class WeightMeasurement {
 
   WeightMeasurement({
     this.id,
-    required this.animalId,
+    this.animalId,
     required this.weight,
     required this.measurementDate,
     required this.rfid,
@@ -129,11 +131,106 @@ class WeightMeasurement {
     );
   }
 
+  // Measurement sınıfından WeightMeasurement oluştur
+  factory WeightMeasurement.fromMeasurement(Measurement measurement) {
+    return WeightMeasurement(
+      id: measurement.id,
+      animalId: 0, // animalId için varsayılan değer - RFID'den bulunabilir
+      weight: measurement.weight,
+      measurementDate: measurement.measurementDateTime,
+      rfid: measurement.animalRfid,
+      notes: measurement.notes,
+      measurementType: measurement.olcumTipi.value,
+      userId: measurement.deviceId != null ? int.tryParse(measurement.deviceId!) : null,
+      createdAt: measurement.createdAt != null 
+          ? DateTime.parse(measurement.createdAt!)
+          : DateTime.now(),
+      updatedAt: measurement.updatedAt != null 
+          ? DateTime.parse(measurement.updatedAt!)
+          : null,
+    );
+  }
+
+  // WeightMeasurement'ı Measurement'a dönüştür
+  Measurement toMeasurement() {
+    return Measurement(
+      id: id,
+      animalRfid: rfid,
+      weight: weight,
+      timestamp: measurementDate.toIso8601String(),
+      olcumTipi: OlcumTipi.fromValue(measurementType),
+      deviceId: userId?.toString(),
+      notes: notes,
+      isSynced: false,
+      createdAt: createdAt.toIso8601String(),
+      updatedAt: updatedAt?.toIso8601String(),
+    );
+  }
+
   // For validation
   String? validate() {
     if (weight <= 0) {
       return 'Ağırlık değeri pozitif olmalıdır';
     }
     return null;
+  }
+
+  // Yardımcı metodlar
+  String get formattedWeight => '${weight.toStringAsFixed(1)} kg';
+  
+  String get formattedDate => DateFormat('dd.MM.yyyy HH:mm').format(measurementDate);
+  
+  String get measurementTypeName => OlcumTipi.fromValue(measurementType).displayName;
+
+  // Kopya oluştur
+  WeightMeasurement copyWith({
+    int? id,
+    int? animalId,
+    double? weight,
+    DateTime? measurementDate,
+    String? rfid,
+    String? notes,
+    int? measurementType,
+    int? userId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return WeightMeasurement(
+      id: id ?? this.id,
+      animalId: animalId ?? this.animalId,
+      weight: weight ?? this.weight,
+      measurementDate: measurementDate ?? this.measurementDate,
+      rfid: rfid ?? this.rfid,
+      notes: notes ?? this.notes,
+      measurementType: measurementType ?? this.measurementType,
+      userId: userId ?? this.userId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'WeightMeasurement{id: $id, animalId: $animalId, weight: $weight, rfid: $rfid, measurementDate: $measurementDate}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is WeightMeasurement &&
+        other.id == id &&
+        other.animalId == animalId &&
+        other.weight == weight &&
+        other.rfid == rfid &&
+        other.measurementDate == measurementDate;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        animalId.hashCode ^
+        weight.hashCode ^
+        rfid.hashCode ^
+        measurementDate.hashCode;
   }
 }

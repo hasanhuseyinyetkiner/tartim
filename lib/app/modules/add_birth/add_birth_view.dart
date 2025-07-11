@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/modules/add_birth/add_birth_controller.dart';
-import 'package:animaltracker/app/modules/animals/animals_controller.dart';
-import 'package:animaltracker/app/data/models/device.dart';
-import 'package:animaltracker/app/data/models/animal.dart';
-import 'package:animaltracker/app/data/repositories/animal_repository.dart';
+import 'package:tartim/app/modules/add_birth/add_birth_controller.dart';
+import 'package:tartim/app/modules/animals/animals_controller.dart';
+import 'package:tartim/app/data/models/device.dart';
+import 'package:tartim/app/data/models/animal.dart';
+import 'package:tartim/app/data/repositories/animal_repository.dart';
 
 class AddBirthView extends GetView<AddBirthController> {
   const AddBirthView({super.key});

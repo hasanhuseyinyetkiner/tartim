@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
-import 'package:animaltracker/app/data/models/animal.dart';
-import 'package:animaltracker/app/data/models/animal_type.dart';
-import 'package:animaltracker/app/data/repositories/animal_repository.dart';
-import 'package:animaltracker/app/data/repositories/animal_type_repository.dart';
-import 'package:animaltracker/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
-import 'package:animaltracker/app/data/models/device.dart';
+import 'package:tartim/app/data/models/animal.dart';
+import 'package:tartim/app/data/models/animal_type.dart';
+import 'package:tartim/app/data/repositories/animal_repository.dart';
+import 'package:tartim/app/data/repositories/animal_type_repository.dart';
+import 'package:tartim/app/modules/weight_measurement/weight_measurement_bluetooth.dart';
+import 'package:tartim/app/data/models/device.dart';
 import 'package:flutter/material.dart';
 
 class AnimalAddController extends GetxController {

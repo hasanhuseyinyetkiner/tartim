@@ -1,6 +1,6 @@
-import 'package:animaltracker/app/data/models/hayvan_agirlik.dart';
-import 'package:animaltracker/app/data/models/olcum_tipi.dart';
-import 'package:animaltracker/app/modules/agirlik_olcum/agirlik_olcum_controller.dart';
+import 'package:tartim/app/data/models/hayvan_agirlik.dart';
+import 'package:tartim/app/data/models/olcum_tipi.dart';
+import 'package:tartim/app/modules/agirlik_olcum/agirlik_olcum_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';

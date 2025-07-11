@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/services/sync_service.dart';
+import 'package:tartim/app/services/sync_service.dart';
 
 /// İnternet bağlantısını takip eden ve durumu güncelleyen servis
 class ConnectivityService extends GetxService {
@@ -13,7 +13,9 @@ class ConnectivityService extends GetxService {
     super.onInit();
     _initConnectivity();
     _subscription =
-        Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+        Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
+          _updateConnectionStatus(results.isNotEmpty ? results.first : ConnectivityResult.none);
+        });
   }
 
   @override
@@ -30,7 +32,7 @@ class ConnectivityService extends GetxService {
   Future<void> _initConnectivity() async {
     try {
       final status = await Connectivity().checkConnectivity();
-      _updateConnectionStatus(status);
+      _updateConnectionStatus(status.isNotEmpty ? status.first : ConnectivityResult.none);
     } catch (e) {
       isConnected.value = false;
       print('Bağlantı kontrolünde hata: $e');
@@ -74,7 +76,7 @@ class ConnectivityService extends GetxService {
   Future<bool> checkConnection() async {
     try {
       final result = await Connectivity().checkConnectivity();
-      final connected = result != ConnectivityResult.none;
+      final connected = result.isNotEmpty && !result.contains(ConnectivityResult.none);
       isConnected.value = connected;
       return connected;
     } catch (e) {

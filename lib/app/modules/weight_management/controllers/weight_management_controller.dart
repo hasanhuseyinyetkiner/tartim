@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:animaltracker/app/data/models/weight_measurement.dart';
-import 'package:animaltracker/app/data/models/birth_weight_measurement.dart';
-import 'package:animaltracker/app/data/models/weaning_weight_measurement.dart';
-import 'package:animaltracker/app/services/api/weight_service.dart';
+import 'package:tartim/app/data/models/weight_measurement.dart';
+import 'package:tartim/app/data/models/birth_weight_measurement.dart';
+import 'package:tartim/app/data/models/weaning_weight_measurement.dart';
+import 'package:tartim/app/services/api/weight_service.dart';
 
 enum WeightMeasurementType { normal, weaning, birth }
 

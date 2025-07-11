@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:animaltracker/app/services/api/auth/auth_service.dart';
-import 'package:animaltracker/routes/app_pages.dart';
+import 'package:tartim/app/services/api/auth/auth_service.dart';
+import 'package:tartim/routes/app_pages.dart';
 
 class LoginView extends GetView<AuthService> {
   LoginView({Key? key}) : super(key: key);
@@ -79,16 +79,16 @@ class LoginView extends GetView<AuthService> {
                   child: ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        final success = await controller.login(
+                        final response = await controller.login(
                           _usernameController.text,
                           _passwordController.text,
                         );
-                        if (success) {
+                        if (response.success) {
                           Get.offAllNamed(Routes.HOME);
                         } else {
                           Get.snackbar(
                             'error'.tr,
-                            'invalid_credentials'.tr,
+                            response.error?.message ?? 'invalid_credentials'.tr,
                             snackPosition: SnackPosition.BOTTOM,
                           );
                         }
